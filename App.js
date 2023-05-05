@@ -1,12 +1,73 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Text, View, TextInput, AppState  } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AppStateListener from "react-native-appstate-listener";
+import * as Notifications from "expo-notifications";
+import { Platform } from "react-native"; // Add this line to the top of the file
 
 const App = () => {
   const [timeNotUsed, setTimeNotUsed] = useState(0);
   const [lastUsed, setLastUsed] = useState(Date.now());
   const [taskName, setTaskName] = useState("");
+  const { hours, minutes, remainingSeconds } = secondsToHMS(timeNotUsed);
+  const [appState, setAppState] = useState(AppState.currentState);
+  const [inactiveTimer, setInactiveTimer] = useState(null);
+
+  async function requestNotificationPermissions() {
+    if (Platform.OS !== "android") {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+    }
+  }
+
+  useEffect(() => {
+    requestNotificationPermissions();
+    AppState.addEventListener("change", handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener("change", handleAppStateChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    AppState.addEventListener("change", handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener("change", handleAppStateChange);
+    };
+  }, []);
+
+  const handleAppStateChange = (nextAppState) => {
+    if (appState.match(/inactive|background/) && nextAppState === "active") {
+      clearTimeout(inactiveTimer);
+    } else if (
+      appState === "active" &&
+      nextAppState.match(/inactive|background/)
+    ) {
+      setInactiveTimer(setTimeout(sendNotification, 3 * 1000)); // 3 seconds
+    }
+    setAppState(nextAppState);
+  };
+
+  const sendNotification = async () => {
+    const notification = {
+      title: "Reminder",
+      body: "You've been inactive for 30 minutes!",
+    };
+    await Notifications.scheduleNotificationAsync({
+      content: notification,
+      trigger: null,
+    });
+  };
 
   useEffect(() => {
     const loadState = async () => {
@@ -70,8 +131,6 @@ const App = () => {
     };
   }
 
-  const { hours, minutes, remainingSeconds } = secondsToHMS(timeNotUsed);
-
   return (
     <View style={styles.container}>
       <TextInput
@@ -116,7 +175,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.2)",
     borderRadius: 5,
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 

@@ -19,7 +19,8 @@
     "react-native": "0.71.7",
     "react-native-appstate-listener": "^1.0.0",
     "react-native-web": "~0.18.11",
-    "@expo/webpack-config": "^18.0.1"
+    "@expo/webpack-config": "^18.0.1",
+    "expo-notifications": "~0.18.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
