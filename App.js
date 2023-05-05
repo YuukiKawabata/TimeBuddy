@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AppStateListener from "react-native-appstate-listener";
 
 const App = () => {
   const [timeNotUsed, setTimeNotUsed] = useState(0);
   const [lastUsed, setLastUsed] = useState(Date.now());
+  const [taskName, setTaskName] = useState("");
 
   useEffect(() => {
     const loadState = async () => {
@@ -73,7 +74,13 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>スマホを使っていない時間:</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={(text) => setTaskName(text)}
+        value={taskName}
+        placeholder="目標を入力してください"
+      />
+      <Text style={styles.title}>をしていない時間:</Text>
       <Text style={styles.time}>
         {hours} 時間 {minutes} 分 {remainingSeconds} 秒
       </Text>
@@ -91,13 +98,25 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "black",
   },
   title: {
+    color: "white",
     fontSize: 24,
     marginBottom: 10,
   },
   time: {
+    color: "white",
     fontSize: 48,
+  },
+  input: {
+    color: "white",
+    fontSize: 30,
+    height: 40,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 5,
+    marginBottom: 10,
+    textAlign: 'center',
   },
 });
 
