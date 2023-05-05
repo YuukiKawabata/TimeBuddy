@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TextInput, AppState  } from "react-native";
+import { StyleSheet, Text, View, TextInput, AppState } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AppStateListener from "react-native-appstate-listener";
 import * as Notifications from "expo-notifications";
@@ -38,14 +38,6 @@ const App = () => {
     };
   }, []);
 
-  useEffect(() => {
-    AppState.addEventListener("change", handleAppStateChange);
-
-    return () => {
-      AppState.removeEventListener("change", handleAppStateChange);
-    };
-  }, []);
-
   const handleAppStateChange = (nextAppState) => {
     if (appState.match(/inactive|background/) && nextAppState === "active") {
       clearTimeout(inactiveTimer);
@@ -53,7 +45,7 @@ const App = () => {
       appState === "active" &&
       nextAppState.match(/inactive|background/)
     ) {
-      setInactiveTimer(setTimeout(sendNotification, 3 * 1000)); // 3 seconds
+      setInactiveTimer(setTimeout(sendNotification, 1800 * 1000)); // 30 minutes
     }
     setAppState(nextAppState);
   };
