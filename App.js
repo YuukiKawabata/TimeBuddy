@@ -1,5 +1,6 @@
+import styles from "./styles";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TextInput, AppState } from "react-native";
+import { Text, View, TextInput, AppState } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AppStateListener from "react-native-appstate-listener";
 import * as Notifications from "expo-notifications";
@@ -46,6 +47,7 @@ const App = () => {
       nextAppState.match(/inactive|background/)
     ) {
       setInactiveTimer(setTimeout(sendNotification, 1800 * 1000)); // 30 minutes
+      saveState(); // 状態を保存する
     }
     setAppState(nextAppState);
   };
@@ -143,32 +145,5 @@ const App = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "black",
-  },
-  title: {
-    color: "white",
-    fontSize: 24,
-    marginBottom: 10,
-  },
-  time: {
-    color: "white",
-    fontSize: 48,
-  },
-  input: {
-    color: "white",
-    fontSize: 30,
-    height: 40,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    borderRadius: 5,
-    marginBottom: 10,
-    textAlign: "center",
-  },
-});
 
 export default App;
