@@ -1,10 +1,12 @@
-import styles from "./styles";
 import React, { useState, useEffect } from "react";
-import { Text, View, TextInput, AppState } from "react-native";
+import { View, AppState, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AppStateListener from "react-native-appstate-listener";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native"; // Add this line to the top of the file
+import TaskInput from "./components/TaskInput";
+import TimeDisplay from "./components/TimeDisplay";
+
 
 const App = () => {
   const [timeNotUsed, setTimeNotUsed] = useState(0);
@@ -127,16 +129,12 @@ const App = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        onChangeText={(text) => setTaskName(text)}
-        value={taskName}
-        placeholder="目標を入力してください"
+      <TaskInput taskName={taskName} setTaskName={setTaskName} />
+      <TimeDisplay
+        hours={hours}
+        minutes={minutes}
+        remainingSeconds={remainingSeconds}
       />
-      <Text style={styles.title}>をしていない時間:</Text>
-      <Text style={styles.time}>
-        {hours} 時間 {minutes} 分 {remainingSeconds} 秒
-      </Text>
       <AppStateListener
         onActive={handleActive}
         onBackground={handleBackground}
@@ -145,5 +143,14 @@ const App = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "black",
+  },
+});
 
 export default App;
