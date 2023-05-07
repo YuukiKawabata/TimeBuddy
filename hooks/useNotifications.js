@@ -60,7 +60,7 @@ export default function useNotifications(handleInactive) {
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "頑張ってください！",
-        body: "アプリを使っていない時間が10秒経過しました",
+        body: "アプリを閉じてから時間が30分経過しました。",
         data: { data: "goes here" },
       },
       trigger: { seconds: 1800 }, // ここで指定した秒数後に通知が発生します
