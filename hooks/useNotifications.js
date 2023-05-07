@@ -63,7 +63,7 @@ export default function useNotifications(handleInactive) {
         body: "アプリを使っていない時間が10秒経過しました",
         data: { data: "goes here" },
       },
-      trigger: { seconds: 10 }, // ここで指定した秒数後に通知が発生します
+      trigger: { seconds: 1800 }, // ここで指定した秒数後に通知が発生します
     });
   };
 
