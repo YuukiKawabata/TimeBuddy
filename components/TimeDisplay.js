@@ -1,7 +1,11 @@
 import React from "react";
 import { Text, StyleSheet } from "react-native";
 
-const TimeDisplay = ({ hours, minutes, remainingSeconds }) => {
+const TimeDisplay = ({ timeNotUsed }) => {
+  const hours = Math.floor(timeNotUsed / 3600);
+  const minutes = Math.floor((timeNotUsed % 3600) / 60);
+  const remainingSeconds = timeNotUsed % 60;
+
   return (
     <>
       <Text style={styles.title}>をしていない時間:</Text>
