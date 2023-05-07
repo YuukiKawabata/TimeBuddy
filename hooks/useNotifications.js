@@ -6,14 +6,18 @@ import { Platform } from "react-native";
 export default function useNotifications(handleInactive) {
   //アプリの状態をstateに保存する
   const [appState, setAppState] = useState(AppState.currentState);
+
+  //アプリがバックグラウンドになった時に、通知を送る
   useEffect(() => {
     requestNotificationPermissions();
     //AppStateの状態が変化した時に、handleAppStateChange()を実行する
     AppState.addEventListener("change", handleAppStateChange);
+    //コンポーネントがアンマウントされた時に、AppStateのイベントリスナーを削除する
     return () => {
       AppState.removeEventListener("change", handleAppStateChange);
     };
   }, []);
+
   //アプリの状態が変化した時に、handleAppStateChange()を実行する
   async function requestNotificationPermissions() {
     //Androidの場合は、通知の許可を取得する
@@ -38,6 +42,30 @@ export default function useNotifications(handleInactive) {
     if (appState.match(/inactive|background/) && nextAppState === "active") {
       handleInactive();
     }
+    // アプリがバックグラウンドに移行したときに通知を発生させる
+    if (appState === "active" && nextAppState === "background") {
+      handleInactive();
+      triggerNotification();
+    }
     setAppState(nextAppState);
   };
+
+  // 通知を発生させる関数
+  const triggerNotification = async () => {
+    // Webプラットフォームで通知を実行しない
+    if (Platform.OS === "web") {
+      return;
+    }
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "頑張ってください！",
+        body: "アプリを使っていない時間が10秒経過しました",
+        data: { data: "goes here" },
+      },
+      trigger: { seconds: 10 }, // ここで指定した秒数後に通知が発生します
+    });
+  };
+
+  return { triggerNotification };
 }
