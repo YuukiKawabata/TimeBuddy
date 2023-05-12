@@ -7,7 +7,7 @@ export default function useNotifications(handleInactive) {
   //アプリの状態をstateに保存する
   const [appState, setAppState] = useState(AppState.currentState);
 
-  //アプリがバックグラウンドになった時に、通知を送る
+  //アプリがバックグラウンドになった時に、通知を送る!
   useEffect(() => {
     requestNotificationPermissions();
     //AppStateの状態が変化した時に、handleAppStateChange()を実行する
