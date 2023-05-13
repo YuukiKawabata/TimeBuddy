@@ -8,6 +8,7 @@ import useNotifications from "./hooks/useNotifications";
 import AppStateListener from "react-native-appstate-listener";
 import { activateKeepAwakeAsync, deactivateKeepAwakeAsync } from 'expo-keep-awake';
 
+//テスト
 
 const App = () => {
   useEffect(() => {
